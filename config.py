@@ -14,6 +14,5 @@ class Config:
         self.energy_threshold = data.get("energy_treshold", 0.01)
         self.pre_roll_seconds = data.get("pre_roll_seconds", 0.25)
         self.lang = data.get("lang", "en")
-        self.command_prefix = data.get("command_prefix", "command")
         self.commands = data.get("commands", {})
 

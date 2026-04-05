@@ -12,8 +12,8 @@ if __name__ == "__main__":
     
     def callback(text):
         splitted = text.split( )
-        if splitted[0].lower() == cfg.command_prefix:
-            command = ' '.join(splitted[1:]).lower().strip()
+        if True:#splitted[0].lower() == cfg.command_prefix:
+            command = ' '.join(splitted[0:]).lower().strip()
             clean_command = re.sub('[?.!;:]', "", command)
             if clean_command in cfg.commands:
                 handle_input(cfg.commands[clean_command])

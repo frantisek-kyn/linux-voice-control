@@ -6,7 +6,6 @@
   "pre_roll_seconds": 0.25,
 	"lang": "en",
 	"paste_shortcut": "ctrl + v",
-	"command_prefix": "command",
 	"commands": {
 		"open terminal": "alt + enter"
 	}
