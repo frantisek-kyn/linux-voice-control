@@ -21,6 +21,6 @@ class Config:
         self.input_delay = data.get("input_delay", 0.01)
         self.paste_shortcut = data.get("paste_shortcut", "ctrl + shift + v")
         self.dictate_prefix = data.get("dictate_prefix", "say")
-        self.reload_command = data.get("reload_command", "reload_config")
+        self.reload_command = data.get("reload_command", "reload config")
         self.commands = data.get("commands", {})
 

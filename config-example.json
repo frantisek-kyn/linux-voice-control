@@ -8,9 +8,10 @@
 	"paste_shortcut": "ctrl  + shift + v",
 	"input_delay": 0.01,
 	"dictate_prefix": "say",
+	"reload_command": "reload config",
 	"commands": {
 		"open terminal": "alt + enter",
-		"test number {numeric}": "a + {1} + b",
+		"test number {numeric}": "a + {1} + a",
 		"press {any}": "{1}"
 	}
 }
