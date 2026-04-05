@@ -88,8 +88,9 @@ def expand_repeats(text: str) -> str:
             return text
         text = new_text
 
+ui = UInput()
+
 def handle_input(text, input_delay = 0.01):
-    ui = UInput()
     text = expand_repeats(text)
     data = text.replace(" ", "").lower().split("+")
     if not all(char in char_map for char in data):
@@ -115,7 +116,7 @@ def handle_input(text, input_delay = 0.01):
                 ui.write(e.EV_KEY, hold_key, 0)
             ui.syn()
             time.sleep(input_delay)
-    ui.close()
+    #ui.close()
 
 if __name__ == "__main__":
     time.sleep(1)
