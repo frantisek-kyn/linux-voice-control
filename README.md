@@ -11,17 +11,17 @@
 # Installation
 The installation procedure differs based on your GPU vendor:
 
-## NVIDIA
-* 1. `pip install -r requirements.txt`
+### NVIDIA
+1. `pip install -r requirements.txt`
 
-## AMD
-* 1. `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm7.2`
-* 2. `pip install -r requirements.txt`
+### AMD
+1. `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm7.2`
+2. `pip install -r requirements.txt`
 
 And in the case that you would want to use only your CPU:
 
-* 1. `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu`
-* 2. `pip install -r requirements.txt`
+1. `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu`
+2. `pip install -r requirements.txt`
 
 For additional information, visit the official [PyTorch installation guide](https://pytorch.org/get-started/locally/).
 
