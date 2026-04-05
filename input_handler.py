@@ -81,7 +81,7 @@ def expand_repeats(text: str) -> str:
 
     while True:
         new_text = pattern.sub(
-                lambda m: "+".join(m.group(2) * int(m.group(1))),
+                lambda m: "+".join([m.group(2)] * int(m.group(1))),
                 text
             )
         if new_text == text:
