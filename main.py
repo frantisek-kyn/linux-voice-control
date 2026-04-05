@@ -12,7 +12,7 @@ if __name__ == "__main__":
     cfg = Config("config.json")
     
     def callback(text):
-        print(f"Obtained: {text}") 
+        print(f"Obtained: {text}")
         split_text = text.split()
         if split_text[0].lower() == cfg.dictate_prefix:
             copied_text = ' '.join(split_text[1:])
@@ -25,6 +25,9 @@ if __name__ == "__main__":
 
         command = ' '.join(split_text).lower().strip()
         clean_command = replace_number_words(re.sub(r'[?.!;:]', '', command))
+        if clean_command == cfg.reload_command:
+            cfg.reload()
+            print("Config Reloaded")
         for pattern, response in cfg.commands.items():
             pattern_clean = re.sub(r'[?.!;:]', '', pattern.lower().strip())
     

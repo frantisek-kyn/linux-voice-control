@@ -2,8 +2,12 @@ import json
 
 class Config:
     def __init__(self, path):
+        self.path = path
+        self.reload()
+
+    def reload(self):
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(self.path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
         except FileNotFoundError:
             data = {}
@@ -17,5 +21,6 @@ class Config:
         self.input_delay = data.get("input_delay", 0.01)
         self.paste_shortcut = data.get("paste_shortcut", "ctrl + shift + v")
         self.dictate_prefix = data.get("dictate_prefix", "say")
+        self.reload_command = data.get("reload_command", "reload_config")
         self.commands = data.get("commands", {})
 
