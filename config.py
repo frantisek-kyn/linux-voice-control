@@ -13,10 +13,12 @@ class Config:
             data = {}
         self.reload_command = data.get("reload_command", "reload config")
         self.modes = data.get("modes", {})
+        
+        self.enable_systray = data.get("enable_systray", False)
 
         for mode in self.modes.values():
-            mode.setdefault("name", "name-not-set")
             mode_type = mode.get("type", None)
+            mode.setdefault("icon", None)
             if not mode_type:
                 raise Exception(f"Type of mode {mode.get('name')} is not set")
             mode.setdefault("commands", {})

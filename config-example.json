@@ -1,10 +1,12 @@
 {
 	"reload_command": "reload config",
 	"starting_mode": "root mode",
+	"enable_systray": true,
 	"modes": {
 		"root mode": {
 			"type": "vosk",
 			"path": "models/vosk-model-small-en-us-0.15",
+			"icon": [0, 255, 0],
 			"input_delay": 0.01,
 			"commands": {
 				"open terminal": "alt + enter",
@@ -16,6 +18,7 @@
 		"dictate mode": {
 			"type": "transformer",
 			"model_name": "whisper-turbo",
+			"icon": [255, 0, 0],
 			"silence_seconds": 0.3,
 			"max_chunk_seconds": 30.0,
 			"energy_threshold": 0.01,

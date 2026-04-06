@@ -9,8 +9,17 @@ import re
 from input_handler import handle_input, expand_command, replace_number_words, char_map
 import pyperclip
 
+import sys
+
 if __name__ == "__main__":
+
     cfg = Config("config.json")
+
+    tray_enabled = False
+    if cfg.enable_systray:
+        from systray import RGBTrayIcon
+        tray = RGBTrayIcon("linux-voice-control")
+        tray_enabled = True
    
     active_mode = cfg.starting_mode
     modes = {}
@@ -27,6 +36,8 @@ if __name__ == "__main__":
         if clean_command in modes:
             modes[active_mode].disable()
             active_mode = clean_command
+            if tray_enabled:
+                tray.set_mode(active_mode)
             modes[active_mode].enable()
             return
         for pattern, response in cfg.modes[active_mode]["commands"].items():
@@ -63,11 +74,16 @@ if __name__ == "__main__":
                     lang = value["lang"],
                     chunk_callback = callback
                 )
+        if tray_enabled:
+            tray.add_mode(key, value["icon"])
     print(json.dumps(cfg.__dict__, indent=2))
     for mode in modes.values():
         mode.start()
     if active_mode:
         modes[active_mode].enable()
+        if tray_enabled:
+            tray.set_mode(active_mode)
+            tray.show()
 
     input("Press Enter to stop\n")
     # record = ws.end()
