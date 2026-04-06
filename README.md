@@ -5,7 +5,8 @@
 # Features
 
 * **Direct Kernel-Level Input**: `python-evdev` injects keystrokes directly into the input subsystem, ensuring compatibility across all GUI and TTY environments.
-* **Local Processing**: Whisper turbo for quick private transcription.
+* **Local Processing**: Relies purely on local models.
+* **Hybrid Transcription**: Rapid TDNN + HMM + WFST models with grammar (e.g., VOSK) for commands, transformer models (e.g., whisper-turbo) for complex dictation.
 * **Configurability**: Command structure is fully customizable. 
 
 # Installation
@@ -27,4 +28,9 @@ For additional information, visit the official [PyTorch installation guide](http
 
 # Status
 
-Highly experimental.
+Highly experimental and in development.
+
+Features to be implemented/polished:
+
+* Dual model implementation (e.g., VOSK for voice commands, arbitrary transformer model for sentence dictation)
+* vim/emacs-like major mode switching
