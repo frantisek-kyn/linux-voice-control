@@ -18,6 +18,7 @@ class VoskStream:
         self.keys = list(command_keys)
         vocabulary = list(command_keys)
         vocabulary.extend(other_words)
+        vocabulary.extend(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"])
         vocabulary.extend(["[unk]"])
         grammar = json.dumps(vocabulary)
         
