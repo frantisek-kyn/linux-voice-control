@@ -57,7 +57,7 @@ def main():
             if match:
                 expanded_command = expand_command(response, match.groups())
                 print(f"Executing: {expanded_command}")
-                handle_input(expanded_command, input_delay = cfg.modes[active_mode]["input_delay"])
+                handle_input(expanded_command, input_delay = cfg.modes[active_mode]["input_delay"], aliases = cfg.modes[active_mode]["aliases"])
                 return
     for key, value in cfg.modes.items():
         if value["type"] == "vosk":

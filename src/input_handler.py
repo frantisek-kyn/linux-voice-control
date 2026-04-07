@@ -58,6 +58,11 @@ def expand_command(response_template, values):
         result = result.replace(f"{{{i}}}", value)
     return result
 
+def apply_aliases(text, aliases):
+    result = text
+    for key, value in aliases.items():
+        result = re.sub(key, value, result)
+    return result
 
 num_words = {
     "zero": "0",
@@ -127,7 +132,8 @@ def handle_exec(text):
 
 combined_regex = re.compile(f"{script_regex}|{python_regex}|{exec_regex}", re.DOTALL)
 
-def handle_input(text, input_delay = 0.01):
+def handle_input(text, input_delay = 0.01, aliases = {}):
+    text = apply_aliases(text, aliases)
     text = expand_repeats(text)
     data = [x.strip() for x in text.split("+")]
     if not all(char.lower() in char_map or combined_regex.fullmatch(char) for char in data):

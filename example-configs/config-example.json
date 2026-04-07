@@ -13,7 +13,7 @@
 				"press {any}": "{1}",
 				"{numeric} times press {any} ": "{1}({2})",
 				"open firefox": "exec(firefox)",
-				"paste sentence": "script(copy;;Example text that I want in clipboard.) + ctrl + shift + v"
+				"text command": "python(print('Test command.'))"
 			}
 		},
 		"dictate mode": {
@@ -27,8 +27,11 @@
 			"lang": "en",
 			"input_delay": 0.01,
 			"transformer_device": "auto",
+			"aliases": {
+				"^write\\((.*)\\)$": "script(copy;;\\1) + ctrl + shift + v"
+			},
 			"commands": {
-				"{rest}": "python(import pyperclip\npyperclip.copy(`{1}`)) + ctrl + shift + v"
+				"{rest}": "write({1})"
 			}
 		}
 	}

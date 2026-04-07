@@ -24,6 +24,7 @@ class Config:
             if not mode_type:
                 raise Exception(f"Type of mode {mode.get('name')} is not set")
             mode.setdefault("commands", {})
+            mode.setdefault("aliases", {})
             if mode_type == "transformer":
                 mode.setdefault("model_name",  "whisper-turbo")
                 mode.setdefault("silence_seconds",  0.3)
