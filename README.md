@@ -29,9 +29,4 @@ For additional information, visit the official [PyTorch installation guide](http
 
 # Status
 
-Highly experimental and in development.
-
-Features to be implemented/polished:
-
-* Dual model implementation (e.g., VOSK for voice commands, arbitrary transformer model for sentence dictation).
-* vim/emacs-like major mode switching.
+In rapid development; config structure is updated often. Currently functional and satisfies many use cases.
