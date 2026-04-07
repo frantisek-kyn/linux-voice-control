@@ -4,6 +4,8 @@ import re
 import subprocess
 import importlib
 
+import warnings
+
 char_map = {
     # Alphabet
     'a': e.KEY_A, 'b': e.KEY_B, 'c': e.KEY_C, 'd': e.KEY_D,
@@ -135,9 +137,18 @@ combined_regex = re.compile(f"{script_regex}|{python_regex}|{exec_regex}", re.DO
 def handle_input(text, input_delay = 0.01, aliases = {}):
     text = apply_aliases(text, aliases)
     text = expand_repeats(text)
-    data = [x.strip() for x in re.split(r"(?!\\)\+", text)]
-    if not all(char.lower() in char_map or combined_regex.fullmatch(char) for char in data):
+    data = [x.strip().replace(r"\+", "+") for x in re.split(r"(?<!\\)\+", text)]
+    print(data[0])
+    invalid_chars = [
+            repr(char) for char in data
+            if char.lower() not in char_map and not combined_regex.fullmatch(char)
+        ]
+    if invalid_chars:
+        warnings.warn(f"Invalid character(s) found: {', '.join(invalid_chars)}")
         return
+    #if not all(char.lower() in char_map or combined_regex.fullmatch(char) for char in data):
+    #    warnings.warn(f"")
+    #    return
     for char in data:
         if handle_script(char):
             continue
