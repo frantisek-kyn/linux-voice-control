@@ -138,7 +138,6 @@ def handle_input(text, input_delay = 0.01, aliases = {}):
     text = apply_aliases(text, aliases)
     text = expand_repeats(text)
     data = [x.strip().replace(r"\+", "+") for x in re.split(r"(?<!\\)\+", text)]
-    print(data[0])
     invalid_chars = [
             repr(char) for char in data
             if char.lower() not in char_map and not combined_regex.fullmatch(char)
