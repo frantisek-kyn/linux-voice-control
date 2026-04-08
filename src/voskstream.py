@@ -17,11 +17,9 @@ class VoskStream:
         self.enabled = False
         
         self.keys = list(command_keys)
-        self.numbers = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"] 
-        vocabulary = list(command_keys)
+        vocabulary = list(self.keys)
         if other_words:
             vocabulary.extend(other_words)
-        vocabulary.extend(self.numbers)
         vocabulary.extend(["[unk]"])
         grammar = json.dumps(vocabulary)
         
@@ -60,11 +58,6 @@ class VoskStream:
     
             # {any} -> any non-whitespace sequence
             regex_pattern = regex_pattern.replace(r'\{any\}', r'(\S+)')
-    
-            # {numeric} -> any value from self.numbers
-            if r'\{numeric\}' in regex_pattern:
-                numeric_pattern = r'(' + '|'.join(self.numbers) + r')'
-                regex_pattern = regex_pattern.replace(r'\{numeric\}', numeric_pattern)
     
             regex_pattern += r'$'
     

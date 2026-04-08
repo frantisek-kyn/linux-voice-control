@@ -11,6 +11,8 @@ import pyperclip
 
 import sys
 
+from .formatter import expand_numeric_placeholders
+
 active_mode = None
 
 def main():
@@ -62,7 +64,7 @@ def main():
     for key, value in cfg.modes.items():
         if value["type"] == "vosk":
             modes[key] = VoskStream(
-                    command_keys = list(value["commands"].keys()) + list(cfg.modes.keys()),
+                    command_keys = expand_numeric_placeholders(list(value["commands"].keys())) + list(cfg.modes.keys()),
                     other_words = None,
                     model_path = value["path"], # Default Vosk local model directory
                     chunk_callback = callback
