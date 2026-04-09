@@ -38,7 +38,7 @@ pip install -e .
 
 Afterwards, you can launch the application via `libre-dictum`.
 
-## 3. Optional Features
+### 3. Optional Features
 
 Execute the following commands to install depedencies for additional features:
 
