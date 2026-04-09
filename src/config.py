@@ -1,12 +1,70 @@
 import json
 import warnings
+from copy import deepcopy
+from typing import Any, Dict
 
 class Config:
     def __init__(self, path):
         self.path = path
         self.reload()
 
-    def reload(self):
+    _keys_not_to_add = ["type", "imports"]
+    _keys_not_to_merge = ["icon", "imports"]
+
+    _default_mode = {
+        "type": "import",
+        "icon": None,
+        "commands": {},
+        "aliases": {},
+        "banned_strings": [],
+        "input_delay": 0.01,
+        "transformer": {
+            "silence_seconds": 0.3,
+            "max_chunk_seconds": 30.0,
+            "energy_threshold": 0.01,
+            "pre_roll_seconds": 0.25,
+            "lang": "en",
+            "transformer_device": "auto"
+        }
+    }
+
+    def _import_mode(self, mode1: Dict[str, Any], mode2: Dict[str, Any]) -> None:
+        def merge(target: Dict[str, Any], source: Dict[str, Any]) -> None:
+            target_type = target.get("type")
+
+            for key, value in source.items():
+                if key in self._keys_not_to_add:
+                    continue
+
+                # Special handling for transformer / vosk
+                if key in ("transformer", "vosk") and isinstance(value, dict):
+                    if target_type == key:
+                        merge(target, value)
+                    continue
+
+                if key not in target:
+                    target[key] = deepcopy(value)
+                    continue
+
+                existing = target[key]
+                if key in self._keys_not_to_merge:
+                    continue
+                elif isinstance(existing, dict) and isinstance(value, dict):
+                    merge(existing, value)
+                elif isinstance(existing, list) and isinstance(value, list):
+                    existing.extend(deepcopy(value))
+
+        merge(mode1, mode2)
+
+    def _append_imports(self, mode: Dict[str, Any]) -> None:
+        for mode_key in mode.get("imports", []):
+            if mode_key not in self.modes:
+                raise Exception(f"Mode {mode_key} needed for import was not found.")
+            imported_mode = self.modes[mode_key]
+            self._import_mode(mode, imported_mode)
+
+
+    def reload(self) -> None:
         try:
             with open(self.path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -15,59 +73,22 @@ class Config:
             data = {}
         self.reload_command = data.get("reload_command", "reload config")
         self.modes = data.get("modes", {})
-        
         self.enable_systray = data.get("enable_systray", False)
-
-        for mode in self.modes.values():
+        self.imports = []
+        for mode_name, mode in self.modes.items():
+            self._append_imports(mode)
             mode.setdefault("type", "import")
-            mode.setdefault("icon", None)
-            mode.setdefault("commands", {})
-            mode.setdefault("aliases", {})
-            mode.setdefault("banned_strings", [])
-            for key in mode.get("imports", []):
-                if key not in self.modes:
-                    continue
-                imported_mode = self.modes[key]
-                if "model_name" in imported_mode:
-                    mode.setdefault("model_name", imported_mode["model_name"])
-                if "silence_seconds" in imported_mode:
-                    mode.setdefault("silence_seconds", imported_mode["silence_seconds"])
-                if "max_chunk_seconds" in imported_mode:
-                    mode.setdefault("max_chunk_seconds", imported_mode["max_chunk_seconds"])
-                if "energy_threshold" in imported_mode:
-                    mode.setdefault("energy_threshold", imported_mode["energy_threshold"])
-                if "pre_roll_seconds" in imported_mode:
-                    mode.setdefault("pre_roll_seconds", imported_mode["pre_roll_seconds"])
-                if "lang" in imported_mode:
-                    mode.setdefault("lang", imported_mode["lang"])
-                if "input_delay" in imported_mode:
-                    mode.setdefault("input_delay", imported_mode["input_delay"])
-                if "transformer_device" in imported_mode:
-                    mode.setdefault("transformer_device", imported_mode["transformer_device"])
-                if "path" in imported_mode:
-                    mode.setdefault("path", imported_mode["path"])
-                if "input_delay" in imported_mode:
-                    mode.setdefault("input_delay", imported_mode["input_delay"])
-                mode["commands"] = imported_mode.get("commands", {}) | mode["commands"]
-                mode["aliases"] = imported_mode.get("aliases", {}) | mode["aliases"]
-                mode["banned_strings"].extend(imported_mode.get("banned_strings", []))
-
-            if mode["type"] == "transformer":
-                mode.setdefault("model_name",  "whisper-turbo")
-                mode.setdefault("silence_seconds",  0.3)
-                mode.setdefault("max_chunk_seconds",  30.0)
-                mode.setdefault("energy_threshold",  0.01)
-                mode.setdefault("pre_roll_seconds",  0.25)
-                mode.setdefault("lang",  "en")
-                mode.setdefault("input_delay",  0.01)
-                mode.setdefault("transformer_device",  "auto")
-            elif mode["type"] == "vosk":
-                path = mode.get("path", None)
-                if not path:
-                    raise Exception(f"Path of mode {mode.get('name')} is not set")
-                mode.setdefault("input_delay",  0.01)
+            if mode["type"] != "import":
+                self._import_mode(mode, self._default_mode)
+            if mode["type"] == "vosk":
+                if not mode.get("path", None):
+                    raise Exception(f"Path of model in mode {mode_name} is not set")
+            elif mode["type"] == "transformer":
+                if not mode.get("model_name", None):
+                    raise Exception(f"Model name in mode {mode_name} is not set")
         for key in list(self.modes.keys()):
             if self.modes[key].get("type") == "import":
                 self.modes.pop(key)
+                self.imports.append(key)
         
         self.starting_mode = data.get("starting_mode", list(self.modes.keys())[0] if len(self.modes) > 0 else None)
