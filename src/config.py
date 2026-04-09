@@ -24,7 +24,6 @@ class Config:
             mode.setdefault("commands", {})
             mode.setdefault("aliases", {})
             mode.setdefault("banned_strings", [])
-            self.imports = []
             for key in mode.get("imports", []):
                 if key not in self.modes:
                     continue
@@ -52,7 +51,6 @@ class Config:
                 mode["commands"] = imported_mode.get("commands", {}) | mode["commands"]
                 mode["aliases"] = imported_mode.get("aliases", {}) | mode["aliases"]
                 mode["banned_strings"].extend(imported_mode.get("banned_strings", []))
-                self.imports.append(key)
 
             if mode["type"] == "transformer":
                 mode.setdefault("model_name",  "whisper-turbo")
@@ -68,7 +66,8 @@ class Config:
                 if not path:
                     raise Exception(f"Path of mode {mode.get('name')} is not set")
                 mode.setdefault("input_delay",  0.01)
-        for key in self.imports:
-            self.modes.pop(key)
+        for key in list(self.modes.keys()):
+            if self.modes[key].get("type") == "import":
+                self.modes.pop(key)
         
         self.starting_mode = data.get("starting_mode", list(self.modes.keys())[0] if len(self.modes) > 0 else None)
