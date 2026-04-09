@@ -24,7 +24,11 @@ class Config:
             mode.setdefault("commands", {})
             mode.setdefault("aliases", {})
             mode.setdefault("banned_strings", [])
-            for imported_mode in [self.modes[key] for key in mode.get("imports", []) if key in self.modes]:
+            self.imports = []
+            for key in mode.get("imports", []):
+                if key not in self.modes:
+                    continue
+                imported_mode = self.modes[key]
                 if "model_name" in imported_mode:
                     mode.setdefault("model_name", imported_mode["model_name"])
                 if "silence_seconds" in imported_mode:
@@ -48,6 +52,7 @@ class Config:
                 mode["commands"] = imported_mode.get("commands", {}) | mode["commands"]
                 mode["aliases"] = imported_mode.get("aliases", {}) | mode["aliases"]
                 mode["banned_strings"].extend(imported_mode.get("banned_strings", []))
+                self.imports.append(key)
 
             if mode["type"] == "transformer":
                 mode.setdefault("model_name",  "whisper-turbo")
@@ -63,5 +68,7 @@ class Config:
                 if not path:
                     raise Exception(f"Path of mode {mode.get('name')} is not set")
                 mode.setdefault("input_delay",  0.01)
+        for key in self.imports:
+            self.modes.pop(key)
         
         self.starting_mode = data.get("starting_mode", list(self.modes.keys())[0] if len(self.modes) > 0 else None)
