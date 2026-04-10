@@ -14,11 +14,15 @@ import sys
 from .formatter import expand_numeric_placeholders
 
 active_mode = None
+previous_mode = None
 
 from pathlib import Path
 
+import warnings
+
 def main():
     global active_mode
+    global previous_mode
     cfg = Config(Path.home() / ".config" / "libre-dictum")
     append_script_path(str(cfg.path))
 
@@ -29,17 +33,22 @@ def main():
         tray_enabled = True
    
     active_mode = cfg.starting_mode
+    previous_mode = cfg.starting_mode
     print(active_mode)
     modes = {}
 
     def change_active_mode(mode_name):
         global active_mode
+        global previous_mode
+        if cfg.previous_mode_keyword == mode_name:
+            mode_name = previous_mode
         if mode_name not in modes:
             warnings.warn(f"Mode not found: {mode_name}. Skipping...")
             return
         modes[active_mode].disable()
         if cfg.modes[active_mode]["exit_command"]:
             handle_input(cfg.modes[active_mode]["exit_command"], input_delay = cfg.modes[active_mode]["input_delay"], aliases = cfg.modes[active_mode]["aliases"])
+        previous_mode = active_mode
         active_mode = mode_name
         if tray_enabled:
             tray.set_mode(active_mode)

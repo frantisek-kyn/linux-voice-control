@@ -89,6 +89,7 @@ class Config:
         self.modes = data.get("modes", {})
         self.enable_systray = data.get("enable_systray", False)
         self.imports = []
+        self.previous_mode_keyword = data.get("previous_mode_keyword", None)
         for mode_name, mode in self.modes.items():
             self._append_imports(mode)
             mode.setdefault("type", "import")
