@@ -140,12 +140,13 @@ def handle_script(text):
 mode_regex = r"mode\((.*)\)"
 
 def handle_mode_change(text, callback):
-    if not callback:
-        return False
 
     match = re.fullmatch(mode_regex, text, re.DOTALL)
     if not match:
         return False
+    if not callback:
+        warnings.warn(f"Callback function is missing.")
+        return True
     captured = match.group(1)
     callback(captured)
     return True

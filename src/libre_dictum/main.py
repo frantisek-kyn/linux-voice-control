@@ -47,13 +47,13 @@ def main():
             return
         modes[active_mode].disable()
         if cfg.modes[active_mode]["exit_command"]:
-            handle_input(cfg.modes[active_mode]["exit_command"], input_delay = cfg.modes[active_mode]["input_delay"], aliases = cfg.modes[active_mode]["aliases"])
+            handle_input(cfg.modes[active_mode]["exit_command"], input_delay = cfg.modes[active_mode]["input_delay"], aliases = cfg.modes[active_mode]["aliases"], mode_change_callback = change_active_mode)
         previous_mode = active_mode
         active_mode = mode_name
         if tray_enabled:
             tray.set_mode(active_mode)
         if cfg.modes[active_mode]["enter_command"]:
-            handle_input(cfg.modes[active_mode]["enter_command"], input_delay = cfg.modes[active_mode]["input_delay"], aliases = cfg.modes[active_mode]["aliases"])
+            handle_input(cfg.modes[active_mode]["enter_command"], input_delay = cfg.modes[active_mode]["input_delay"], aliases = cfg.modes[active_mode]["aliases"], mode_change_callback = change_active_mode)
         modes[active_mode].enable()
 
      
