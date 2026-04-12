@@ -44,6 +44,7 @@ Afterwards, you can launch the application via `libre-dictum`.
 ### 3 VOSK
 
 The main voice-control feature utilizes VOSK. You'll need to download the VOSK model from [VOSK website](https://alphacephei.com/vosk/models).
+
 The small vosk-model-small-en-us-0.15 model is enough for most use cases and is the one libre-dictum is tested on.
 
 ### 4. Optional Features
@@ -73,6 +74,7 @@ Enables relative mouse movement using head rotation from webcamera.
 ```bash
 pip install -e .[head-tracking]
 ```
+Also requires downloading this [model](https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task) from google.
 
 ### all
 You can enable all optional features via
@@ -82,7 +84,10 @@ pip install -e .[all]
 
 ### 5. Add Config
 
-The software must be configured to user's need using config file located at `~/.config/libre-dictum/config.json`Until documentation, explaining every setting in config.json, is written. Refer to [example configs](./examples/configs/) for inspiration.
+The software must be configured to user's need using config file located at `~/.config/libre-dictum/config.json`
+
+Until documentation, explaining every setting in config.json, is written. Refer to [example configs](./examples/configs/) for inspiration.
+
 Without the configuration the software does nothing.
 
 
