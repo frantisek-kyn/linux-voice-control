@@ -156,8 +156,12 @@ def main():
         if tray_enabled:
             tray.set_mode(active_mode)
             tray.show()
-
-    input("Press Enter to stop\n")
+    try:
+        input("Press Enter to stop\n")
+    except EOFError:
+        import time
+        while True:
+            time.sleep(3600)
 
 if __name__ == "__main__":
     main()
