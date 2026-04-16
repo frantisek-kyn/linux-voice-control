@@ -24,6 +24,9 @@
 				"open firefox": "exec(firefox)",
 				"text command": "python(print('Test command.'))",
 				"test plus": "write(\\+)"
+				"hold control": "hold(ctrl)",
+				"release control": "release(ctrl)",
+				"toggle shift": "toggle(shift)"
 			}
 		},
 		"dictate mode": {

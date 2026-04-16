@@ -45,7 +45,9 @@ char_map = {
     'space': e.KEY_SPACE
 }
 
-holdable_keys = ["shift", "ctrl", "alt", "meta", "win"]
+modifier_keys = ["shift", "ctrl", "alt", "meta", "win"]
+
+modifiers_held = []
 
 keys_held = []
 
@@ -140,7 +142,6 @@ def handle_script(text):
 mode_regex = r"mode\((.*)\)"
 
 def handle_mode_change(text, callback):
-
     match = re.fullmatch(mode_regex, text, re.DOTALL)
     if not match:
         return False
@@ -151,8 +152,34 @@ def handle_mode_change(text, callback):
     callback(captured)
     return True
 
+hold_regex = r"hold\((.*)\)"
 
-combined_regex = re.compile(f"{script_regex}|{python_regex}|{exec_regex}|{mode_regex}", re.DOTALL)
+def handle_hold(text):
+    match = re.fullmatch(hold_regex, text, re.DOTALL)
+    if not match:
+        return (False, text)
+    captured = match.group(1)
+    return (True, captured)
+
+release_regex = r"release\((.*)\)"
+
+def handle_release(text):
+    match = re.fullmatch(release_regex, text, re.DOTALL)
+    if not match:
+        return (False, text)
+    captured = match.group(1)
+    return (True, captured)
+
+toggle_regex = r"toggle\((.*)\)"
+
+def handle_toggle(text):
+    match = re.fullmatch(toggle_regex, text, re.DOTALL)
+    if not match:
+        return (False, False, text)
+    captured = match.group(1)
+    return (True, captured in keys_held, captured)
+
+combined_regex = re.compile(f"{script_regex}|{python_regex}|{exec_regex}|{mode_regex}|{hold_regex}|{release_regex}|{toggle_regex}", re.DOTALL)
 
 def handle_input(text, input_delay = 0.01, aliases = {}, script_path = None, mode_change_callback = None):
     text = apply_aliases(text, aliases)
@@ -174,22 +201,45 @@ def handle_input(text, input_delay = 0.01, aliases = {}, script_path = None, mod
             continue
         if handle_exec(char):
             continue
+
+        holding, char = handle_hold(char)
+        release, char = handle_release(char)
+        toggle, toggle_state, char = handle_toggle(char)
+
+        if toggle:
+            if toggle_state:
+                release = True
+            else:
+                holding = True
+
         char = char.lower()
         key = char_map[char]
-        ui.write(e.EV_KEY, key, 1)
-        ui.syn()
-        time.sleep(input_delay)
 
-        if char in holdable_keys:
-            keys_held.append(key)
-            continue
+        if not release:
+            if char in keys_held:
+                continue
+            ui.write(e.EV_KEY, key, 1)
+            ui.syn()
+            time.sleep(input_delay)
+
+            if holding:
+                keys_held.append(char)
+                continue
+
+            if char in modifier_keys:
+                modifiers_held.append(key)
+                continue
         
         ui.write(e.EV_KEY, key, 0)
         ui.syn()
         time.sleep(input_delay)
 
-        if len(keys_held) != 0:
-            for hold_key in keys_held:
+        if release:
+            keys_held.remove(char)
+            continue
+
+        if len(modifiers_held) != 0:
+            for hold_key in modifiers_held:
                 ui.write(e.EV_KEY, hold_key, 0)
             ui.syn()
             time.sleep(input_delay)
