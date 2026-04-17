@@ -246,9 +246,6 @@ def handle_input(text, input_delay = 0.01, aliases = {}, script_path = None, mod
                     modifiers_held.remove(hold_key)
             ui.syn()
             time.sleep(input_delay)
-    #ui.close()
-    print(f"Keys held: {keys_held}")
-    print(f"Modifiers held: {modifiers_held}")
 
 # Create a virtual mouse device
 mouse_capabilities = {
