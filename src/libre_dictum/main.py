@@ -80,7 +80,7 @@ def main():
         dx = abs_min(dx, cfg.modes[active_mode]["ht_max_speed"])
         dy = abs_min(dy, cfg.modes[active_mode]["ht_max_speed"])
 
-        handle_mouse_relative(-dx, dy)
+        handle_mouse_relative(-dx if cfg.ht_invert_x else dx, -dy if cfg.ht_invert_y else dy)
 
     def callback(text):
         global active_mode

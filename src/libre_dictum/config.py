@@ -105,13 +105,15 @@ class Config:
         self.imports = []
         self.previous_mode_keyword = data.get("previous_mode_keyword", None)
         self.enable_head_tracking = data.get("enable_head_tracking", False)
-        self.ht_min_detection_confidence = data.get("ht_min_detection_confidence", 0.5)
-        self.ht_min_tracking_confidence = data.get("ht_min_tracking_confidence", 0.5)
-        self.ht_offset_x = data.get("ht_offset_x", 0.0)
-        self.ht_offset_y = data.get("ht_offset_y", 0.0)
 
         if self.enable_head_tracking:
             self.ht_model_path = data.get("ht_model_path", None)
+            self.ht_min_detection_confidence = data.get("ht_min_detection_confidence", 0.5)
+            self.ht_min_tracking_confidence = data.get("ht_min_tracking_confidence", 0.5)
+            self.ht_offset_x = data.get("ht_offset_x", 0.0)
+            self.ht_offset_y = data.get("ht_offset_y", 0.0)
+            self.ht_invert_x = data.get("ht_invert_x", False)
+            self.ht_invert_y = data.get("ht_invert_y", False)
             if not self.ht_model_path:
                 raise Exception(f"Path of model for head tracking is not set")
             self.camera_index = data.get("camera_index", 0)
